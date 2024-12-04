@@ -591,6 +591,11 @@ export default function Demo({
                     label: 'Natural language',
                     attributes: getExportTabAttributes('natural_language'),
                   },
+                  {
+                    value: 'postgrest',
+                    label: 'PostgREST',
+                    attributes: getExportTabAttributes('postgrest'),
+                  },
                 ]}>
                 <TabItem value="json">
                   <div className={styles.exportOptions}>
@@ -728,6 +733,7 @@ export default function Demo({
                   { value: 'spel', label: 'SpEL' },
                   { value: 'cel', label: 'CEL' },
                   { value: 'jsonata', label: 'JSONata' },
+                  { value: 'postgrest', label: 'PostgREST' },
                 ]}>
                 <TabItem value="sql">
                   <ImportTab

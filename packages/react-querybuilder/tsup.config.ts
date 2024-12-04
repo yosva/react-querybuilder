@@ -33,6 +33,7 @@ export default defineConfig(async options => {
     parseMongoDB: 'src/utils/parseMongoDB/index.ts',
     parseSpEL: 'src/utils/parseSpEL/index.ts',
     parseSQL: 'src/utils/parseSQL/index.ts',
+    parsePostgREST: 'src/utils/parsePostgREST/index.ts',
     transformQuery: 'src/utils/transformQuery.ts',
   } as const;
 

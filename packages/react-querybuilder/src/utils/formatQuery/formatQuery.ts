@@ -11,6 +11,7 @@ import type {
   ParameterizedSQL,
   QueryValidator,
   RQBJsonLogic,
+  RQBPostgREST,
   RuleGroupType,
   RuleGroupTypeAny,
   RuleProcessor,
@@ -36,6 +37,7 @@ import { defaultRuleProcessorSpEL } from './defaultRuleProcessorSpEL';
 import { defaultRuleProcessorSQL } from './defaultRuleProcessorSQL';
 import { defaultValueProcessorByRule } from './defaultValueProcessorByRule';
 import { defaultValueProcessorNL } from './defaultValueProcessorNL';
+import { defaultRuleProcessorPostgREST } from './defaultRuleProcessorPostgREST';
 import {
   celCombinatorMap,
   getQuoteFieldNamesWithArray,
@@ -121,7 +123,7 @@ function formatQuery(
   ruleGroup: RuleGroupTypeAny,
   options: Exclude<
     ExportFormat,
-    'parameterized' | 'parameterized_named' | 'jsonlogic' | 'elasticsearch' | 'jsonata'
+    'parameterized' | 'parameterized_named' | 'jsonlogic' | 'elasticsearch' | 'jsonata' | 'postgrest'
   >
 ): string;
 /**
@@ -132,7 +134,7 @@ function formatQuery(
   options: FormatQueryOptions & {
     format: Exclude<
       ExportFormat,
-      'parameterized' | 'parameterized_named' | 'jsonlogic' | 'elasticsearch' | 'jsonata'
+      'parameterized' | 'parameterized_named' | 'jsonlogic' | 'elasticsearch' | 'jsonata' | 'postgrest'
     >;
   }
 ): string;
@@ -189,6 +191,9 @@ function formatQuery(ruleGroup: RuleGroupTypeAny, options: FormatQueryOptions | 
       case 'jsonata':
         ruleProcessorInternal = defaultRuleProcessorJSONata;
         break;
+      case 'postgrest':
+          ruleProcessorInternal = defaultRuleProcessorPostgREST;
+          break;
       default:
     }
   } else {
@@ -221,7 +226,9 @@ function formatQuery(ruleGroup: RuleGroupTypeAny, options: FormatQueryOptions | 
                     ? (ruleProcessorInternal ?? defaultRuleProcessorElasticSearch)
                     : format === 'jsonata'
                       ? (ruleProcessorInternal ?? defaultRuleProcessorJSONata)
-                      : defaultValueProcessorByRule;
+                      : format === 'postgrest'
+                      ? (ruleProcessorInternal ?? defaultRuleProcessorPostgREST)
+                        : defaultValueProcessorByRule;
     quoteFieldNamesWith = getQuoteFieldNamesWithArray(optionsWithPresets.quoteFieldNamesWith);
     fieldIdentifierSeparator = optionsWithPresets.fieldIdentifierSeparator ?? '';
     validator = optionsWithPresets.validator ?? (() => true);
@@ -873,6 +880,52 @@ function formatQuery(ruleGroup: RuleGroupTypeAny, options: FormatQueryOptions | 
     return processRuleGroup(ruleGroup, true);
   }
   // #endregion
+
+    // #region PostgREST
+    if (format === 'postgrest') {
+      const query = isRuleGroupType(ruleGroup) ? ruleGroup : convertFromIC(ruleGroup);
+  
+      const processRuleGroup = (rg: RuleGroupType, _outermost?: boolean): RQBJsonLogic => {
+        if (!isRuleOrGroupValid(rg, validationMap[rg.id ?? /* istanbul ignore next */ ''])) {
+          return false;
+        }
+  
+        const processedRules = rg.rules
+          .map(rule => {
+            if (isRuleGroup(rule)) {
+              return processRuleGroup(rule);
+            }
+            const [validationResult, fieldValidator] = validateRule(rule);
+            if (
+              !isRuleOrGroupValid(rule, validationResult, fieldValidator) ||
+              rule.field === placeholderFieldName ||
+              rule.operator === placeholderOperatorName
+            ) {
+              return false;
+            }
+            const fieldData = getOption(fields, rule.field);
+            return (ruleProcessorInternal ?? valueProcessorInternal)(rule, {
+              parseNumbers,
+              fieldData,
+              format,
+            });
+          })
+          .filter(Boolean);
+  
+        if (processedRules.length === 0) {
+          return false;
+        }
+  
+        const jsonRuleGroup: RQBPostgREST = { [rg.combinator]: processedRules } as {
+          [k in DefaultCombinatorName]: [RQBPostgREST, RQBPostgREST, ...RQBPostgREST[]];
+        };
+  
+        return rg.not ? { '!': jsonRuleGroup } : jsonRuleGroup;
+      };
+  
+      return processRuleGroup(query, true);
+    }
+    // #endregion
 
   return '';
 }

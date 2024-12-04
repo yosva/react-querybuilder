@@ -129,7 +129,8 @@ type ExportFormat =
   | 'jsonata'
   | 'elasticsearch'
   | 'spel'
-  | 'natural_language';
+  | 'natural_language'
+  | 'postgrest';
 
 interface FormatQueryOptions {
   format?: ExportFormat;

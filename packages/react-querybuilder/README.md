@@ -90,7 +90,7 @@ console.log(sqlWhere);
 
 ## Import
 
-To [import queries](https://react-querybuilder.js.org/docs/utils/import) use `parseSQL`, `parseMongoDB`, `parseJsonLogic`, `parseJSONata`, `parseCEL`, or `parseSpEL` depending on the source.
+To [import queries](https://react-querybuilder.js.org/docs/utils/import) use `parseSQL`, `parseMongoDB`, `parseJsonLogic`, `parseJSONata`, `parseCEL`, `parseSpEL` or `parsePostgREST` depending on the source.
 
 > [!TIP]
 >
@@ -132,6 +132,7 @@ import { parseJsonLogic } from 'react-querybuilder/parseJsonLogic';
 import { parseMongoDB } from 'react-querybuilder/parseMongoDB';
 import { parseSpEL } from 'react-querybuilder/parseSpEL';
 import { parseSQL } from 'react-querybuilder/parseSQL';
+import { parsePostgREST } from 'react-querybuilder/parsePostgREST';
 import { transformQuery } from 'react-querybuilder/transformQuery';
 ```
 

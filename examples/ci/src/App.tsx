@@ -157,6 +157,17 @@ export const App = () => {
           2
         )}
       </pre>
+      <h5>PostgREST</h5>
+      <pre>
+        {JSON.stringify(
+          formatQuery(queryForFormatting, {
+            format: 'postgrest',
+            parseNumbers,
+          }),
+          null,
+          2
+        )}
+      </pre>
     </div>
   );
 };

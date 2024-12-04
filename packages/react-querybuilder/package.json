@@ -55,6 +55,10 @@
       "types": "./dist/types/utils/parseSQL/index.d.ts",
       "default": "./dist/parseSQL.js"
     },
+    "./parsePostgREST": {
+      "types": "./dist/types/utils/parsePostgREST/index.d.ts",
+      "default": "./dist/parsePostgREST.js"
+    },
     "./transformQuery": {
       "types": "./dist/types/utils/transformQuery.d.ts",
       "default": "./dist/transformQuery.js"
@@ -71,6 +75,7 @@
     "parseMongoDB",
     "parseSpEL",
     "parseSQL",
+    "parsePostgREST",
     "transformQuery"
   ],
   "sideEffects": [

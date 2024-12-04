@@ -21,6 +21,7 @@
       "@rqb-parsemongodb": ["./packages/react-querybuilder/src/utils/parseMongoDB"],
       "@rqb-parsespel": ["./packages/react-querybuilder/src/utils/parseSpEL"],
       "@rqb-parsesql": ["./packages/react-querybuilder/src/utils/parseSQL"],
+      "@rqb-parsepostgrest": ["./packages/react-querybuilder/src/utils/parsePostgREST"],
       "@rqb-devapp": ["./utils/devapp"],
       "@rqb-testing": ["./utils/testing"],
       "@rqb-utils": ["./packages/react-querybuilder/src/utils"],

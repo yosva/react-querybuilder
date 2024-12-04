@@ -97,6 +97,7 @@ export const DevLayout = ({
           <option value="jsonlogic">JsonLogic</option>
           <option value="jsonata">JSONata</option>
           <option value="json">JSON</option>
+          <option value="postgrest">PostgREST</option>
         </select>
         <button type="button" onClick={onImportClick}>
           Import

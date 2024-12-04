@@ -1,0 +1,4 @@
+{
+  "main": "../dist/parsePostgREST.js",
+  "types": "../dist/types/utils/parsePostgREST/index.d.ts"
+}
